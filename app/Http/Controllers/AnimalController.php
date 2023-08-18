@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Animal;
 use Illuminate\Http\Request;
 // 下面這句不知道是要宣告什麼後期再來研究。
-use Symdony\Component\HttpFoundatiom\Response;
+use Illuminate\Http\Response;
 
 class AnimalController extends Controller
 {
