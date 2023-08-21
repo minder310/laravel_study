@@ -41,6 +41,7 @@ class AnimalController extends Controller
         $animal= Animal::create($request->all());
         // 更新物件$animal的資料。
         $animal= $animal->refresh();
+        // 回傳$animal的資料，並且回傳HTTP_CREATED的狀態碼。
         return response($animal, Response::HTTP_CREATED);
     }
 
@@ -80,12 +81,14 @@ class AnimalController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
+     * 刪除動物的功能。刪除資料庫的動物。
      * @param  \App\Models\Animal  $animal
      * @return \Illuminate\Http\Response
      */
     public function destroy(Animal $animal)
     {
-        //
+        // 刪除$animal的資料。
+        $animal->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
