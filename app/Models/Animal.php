@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Animal extends Model
 {
+    // 軟刪除功能。
+    use SoftDeletes;
     use HasFactory;
     /**
      *  可以被批量寫入的屬性。
