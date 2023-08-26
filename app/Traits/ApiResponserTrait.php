@@ -19,6 +19,8 @@ trait ApiResponserTrait
         return response()->json([
             'message' => $message,
             'code' => $code,
-        ],$status);
+        ],
+        $status
+    );
     }
 }

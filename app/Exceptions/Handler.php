@@ -2,6 +2,9 @@
 
 namespace App\Exceptions;
 
+// 宣告自己新作的trait，這個trait是用來回傳錯誤訊息的。
+use App\Traits\ApiResponserTrait;
+
 //使用laravel裡面已經做好的handler功能 as 市縮寫的意思。
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -10,11 +13,21 @@ use Throwable;
 // 新增加的使用功能。
 use Illuminate\Http\Response;
 // 這是回傳錯誤訊息的內建宣告。
+
+// 找不到資源的錯誤訊息。功能宣告處。
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\ApiResponserTrait;
+// 找不到此方法的錯誤訊息。功能宣告處。
+use Symfony\Component\HttpKernel\Exception\MothodNotFoundHttpException;
+// 找不到此網址的錯誤訊息。功能宣告處。
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class Handler extends ExceptionHandler
 {
-    public function render($request,Throwable $exception){
+    // 宣告使用trait的功能。
+    use ApiResponserTrait;
+    public function render($request, Throwable $exception)
+    {
+
         /** 
          * 
          * //這裡是判斷傳過來的request是否為json格式，如果是的話就回傳json格式的錯誤訊息。       
@@ -30,16 +43,26 @@ class Handler extends ExceptionHandler
          *     }
          * }
          * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-        */
+         */
+        // 找不到資源的錯誤訊息。的判斷處。
+        if ($request->expectsJson()) {
+            if ($exception instanceof ModelNotFoundException) {
+                // 下面這句是取用ApiResponserTrait.php裡面的errorResponse方法。
+                return $this->errorResponse('找不到資源。', Response::HTTP_NOT_FOUND);
+            }
+            if ($exception instanceof NotFoundHttpException) {
+                // 下面這句是取用ApiResponserTrait.php裡面的errorResponse方法。
+                return $this->errorResponse('找不到此網頁。', Response::HTTP_NOT_FOUND);
+            }
+            if ($exception instanceof MothodNotFoundHttpException) {
+                // 下面這句是取用ApiResponserTrait.php裡面的errorResponse方法。
+                return $this->errorResponse(
+                    $exception->getMessage(),
+                    Response::HTTP_METHOD_NOT_ALLOWED
+                );
+            }
+        }
+
 
         // dd($exception);
         // 執行父類別，
