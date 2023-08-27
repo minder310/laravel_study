@@ -56,7 +56,8 @@ class AnimalController extends Controller
      */
     public function show(Animal $animal)
     {
-        //
+        //顯示單獨動物的資料。
+        return response($animal, Response::HTTP_OK);
     }
 
     /**
