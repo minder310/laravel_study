@@ -18,8 +18,9 @@ class AnimalController extends Controller
      */
     public function index()
     {
+        $animals= Animal::get();
         //這裡是導到index.blade.php的功能。
-        return view('animal');
+        return view('animal', compact('animals'));
     }
 
     /**
