@@ -128,5 +128,6 @@
                 </div>
             </div>
         </div>
+        <a href="{{route('animal.index')}}">動物介紹畫面</a>
     </body>
 </html>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+// 宣告使用Animal的model。
 use App\Models\Animal;
+// 宣告使用Request的功能。可以接收前端表單資料，並且傳送到後端。
 use Illuminate\Http\Request;
 // 下面這句不知道是要宣告什麼後期再來研究。
 use Illuminate\Http\Response;
@@ -16,7 +18,8 @@ class AnimalController extends Controller
      */
     public function index()
     {
-        //
+        //這裡是導到index.blade.php的功能。
+        return view('animal');
     }
 
     /**
@@ -74,9 +77,18 @@ class AnimalController extends Controller
      * @param  \App\Models\Animal  $animal
      * @return \Illuminate\Http\Response
      */
+                            // 前端傳入的資料，後面宣告資料庫宣告成的物件，後面指的是要修改哪一ID的資料。
     public function update(Request $request, Animal $animal)
     {
-        //
+        //因為$animal是物件，所以可以使用update的方法，並且把前端傳入的資料全部更新到資料庫，後面更新全部前端傳來的資料。
+        $animal->update($request->all());
+        // 回傳$animal的資料，並且回傳HTTP_OK的狀態碼。
+        return response($animal, Response::HTTP_OK);
+
+        /**
+         * 有兩種方式可以更新資料庫。
+         * put是全部更新，patch是部分更新。
+         */
     }
 
     /**

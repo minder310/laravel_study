@@ -10,6 +10,7 @@ class Animal extends Model
 {
     // 軟刪除功能。
     use SoftDeletes;
+    // 
     use HasFactory;
     /**
      *  可以被批量寫入的屬性。
@@ -22,8 +23,8 @@ class Animal extends Model
         'birthday',
         'area',
         'fix',
-        'description',
-        'persinality',
+        'descripiton',
+        'personality',
         'user_id',//不建議與允許批量寫入，將在後續身分驗證章節修改這邊的設定。
     ];
 }
