@@ -1,8 +1,8 @@
 <?php
-// 製作假資料的頁面。
+// 宣告製作假資料的公廠類別。
 namespace Database\Factories;
 
-
+// 宣告使用Factory(工廠)的功能。
 use Illuminate\Database\Eloquent\Factories\Factory;
 // 宣告使用Animal這個model。
 use App\Models\Animal;
@@ -14,6 +14,7 @@ use App\Models\User;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Animal>
  */
+// 類別AnimalFactory繼承Factory的功能。
 class AnimalFactory extends Factory
 {
     /**
@@ -21,7 +22,9 @@ class AnimalFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    // protected 是受保護的意思。
     protected $model = Animal::class;
+    // definition是定義的意思。
     public function definition()
     {
         

@@ -16,11 +16,14 @@ class AnimalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // 獲取所有資料的function。
     public function index()
     {
+        // 獲取所有動物的資料。
         $animals= Animal::get();
-        //這裡是導到index.blade.php的功能。
-        return view('animal', compact('animals'));
+        // 用response的方法回傳$animals的資料，並且回傳HTTP_OK的狀態碼。
+        return response(['data'=>$animals], Response::HTTP_OK);
+
     }
 
     /**
@@ -55,6 +58,7 @@ class AnimalController extends Controller
      * @param  \App\Models\Animal  $animal
      * @return \Illuminate\Http\Response
      */
+    // show(資料庫名稱，資料庫的ID)
     public function show(Animal $animal)
     {
         //顯示單獨動物的資料。

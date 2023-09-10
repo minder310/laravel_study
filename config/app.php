@@ -107,7 +107,7 @@ return [
     | localized telephone numbers, street address information and more.
     |
     */
-
+    // 將建假資料的語言設定為中文。
     'faker_locale' => 'zh_TW',
 
     /*
