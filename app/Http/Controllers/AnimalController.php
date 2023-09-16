@@ -24,7 +24,7 @@ class AnimalController extends Controller
         // anumals = Model Animal的所有資料，並且依照id的大小排序，並且分頁，並且把前端的資料傳送到後端。
         // asc是由小到大排序，desc是由大到小排序。
         $animals=Animal::orderBy('id', 'asc')
-        // 分配每個頁面顯示的資料依照$limit的數字。
+        // 分配每個頁面顯示的資料依照$limit的數字，會把資料存進data裡面。
         ->paginate($limit)
         // 這是用來保存前端傳進來的資料，並且將資料儲存在url中。
         ->appends($request->query());
