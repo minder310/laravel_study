@@ -21,10 +21,26 @@ class AnimalController extends Controller
     {
         // 取用前台所有資料$request下面的limit資料，如果沒有就是10。
         $limit = $request->limit ?? 10;
+
+        $query=Animal::query();
+
+        if(isset($request->filters)){
+            $filters =explode(',',$request->filters);
+            // explode是把字串變成陣列，$request->filters是前端傳來的資料，並且用,分開。
+            foreach($filters as $key => $filter){
+                list($key,$value)=explode(':',$filter);
+                // list是把字串變成陣列，$filter是前端傳來的資料，並且用:分開。
+                $query->where($key,'like',"%$value%");
+                // 使用sql語法where，$key是欄位名稱，$value是欄位的值，%$value%是模糊搜尋，%是任意字元。
+            }
+        }
+
+
+
         // anumals = Model Animal的所有資料，並且依照id的大小排序，並且分頁，並且把前端的資料傳送到後端。
         // asc是由小到大排序，desc是由大到小排序。
         $animals=Animal::orderBy('id', 'asc')
-        // 分配每個頁面顯示的資料依照$limit的數字，會把資料存進data裡面。
+        // 分配每個頁面顯示的資料依照$limit的數值，進行分頁。
         ->paginate($limit)
         // 這是用來保存前端傳進來的資料，並且將資料儲存在url中。
         ->appends($request->query());
