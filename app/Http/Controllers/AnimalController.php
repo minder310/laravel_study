@@ -23,13 +23,16 @@ class AnimalController extends Controller
         $limit = $request->limit ?? 10;
 
         $query=Animal::query();
+        // 創建一個query的物件，並且使用Animal的model後面的query方法。可以在後面使用sql語法。
 
         if(isset($request->filters)){
+
             $filters =explode(',',$request->filters);
             // explode是把字串變成陣列，$request->filters是前端傳來的資料，並且用,分開。
             foreach($filters as $key => $filter){
                 list($key,$value)=explode(':',$filter);
-                // list是把字串變成陣列，$filter是前端傳來的資料，並且用:分開。
+                // list是把陣列的值，分別指定給變數，$key是欄位名稱，$value是欄位的值，後面的export是把字串變成陣列，$filter是前端傳來的資料，並且用:分開。
+                // list功能是把陣列的值，分別給上另外一個代名詞，例如list($a,$b)=[1,2]，$a=1,$b=2。
                 $query->where($key,'like',"%$value%");
                 // 使用sql語法where，$key是欄位名稱，$value是欄位的值，%$value%是模糊搜尋，%是任意字元。
             }
@@ -39,7 +42,9 @@ class AnimalController extends Controller
 
         // anumals = Model Animal的所有資料，並且依照id的大小排序，並且分頁，並且把前端的資料傳送到後端。
         // asc是由小到大排序，desc是由大到小排序。
-        $animals=Animal::orderBy('id', 'asc')
+        // $animals=Animal::orderBy('id', 'asc')
+
+        $animals=$query->orderBy('id', 'asc')
         // 分配每個頁面顯示的資料依照$limit的數值，進行分頁。
         ->paginate($limit)
         // 這是用來保存前端傳進來的資料，並且將資料儲存在url中。
