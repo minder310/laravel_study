@@ -8,6 +8,8 @@ use App\Models\Animal;
 use Illuminate\Http\Request;
 // 下面這句不知道是要宣告什麼後期再來研究。
 use Illuminate\Http\Response;
+// 宣告使用Cache的功能。可以使用快取的功能。
+use Illuminate\Support\Facades\Cache;
 
 class AnimalController extends Controller
 {
@@ -19,14 +21,42 @@ class AnimalController extends Controller
     // 獲取所有資料的function。
     public function index(Request $request)
     {
+        // 使用前台網址當快取資料的寫法
+        $url=$request->url();
+        // 取用前台網址的資料，並且把資料儲存在$url裡面。
+        $queryParams=$request->query();
+        // 取用前台所有資料$request下面的query資料，並且把資料儲存在$queryParams裡面。
+        ksort($queryParams);
+        // 每個人所請求的query參數順序可能不同，使用第一個參數一個英文字母排序。
+        $queryString=http_build_query($queryParams);
+        // 把$queryParams的資料，並且把資料儲存在$queryString裡面。
+        $fullurl="{$url}?{$queryString}";
+
+        // 使用laravel的快取方法檢查是否有快取紀錄。
+        if(Cache::has($fullurl)){
+            // 如果有快取紀錄，就回傳快取紀錄。
+            return Cache::get($fullurl);
+        }
+        
         // 取用前台所有資料$request下面的limit資料，如果沒有就是10。
         $limit = $request->limit ?? 10;
 
         $query=Animal::query();
         // 創建一個query的物件，並且使用Animal的model後面的query方法。可以在後面使用sql語法。
+        
+        // 如果前端書入資料有sort的話就執行下面的程式碼，功能是依照前端的資料進行排序。
+        if(isset($request->sorts)){
+            $sorts=explode(',',$request->sorts);
+            foreach($sorts as $key => $sort){
+                list($key,$value)=explode(':',$sort);
+                $query->orderBy($key,$value);
+            }
+        }else{
+            // 如果沒有上述條件，就依照id的大小進行排序。
+            $query->orderBy('id','asc');
+        }
 
         if(isset($request->filters)){
-
             $filters =explode(',',$request->filters);
             // explode是把字串變成陣列，$request->filters是前端傳來的資料，並且用,分開。
             foreach($filters as $key => $filter){
@@ -44,13 +74,14 @@ class AnimalController extends Controller
         // asc是由小到大排序，desc是由大到小排序。
         // $animals=Animal::orderBy('id', 'asc')
 
-        $animals=$query->orderBy('id', 'asc')
+        $animals=$query
         // 分配每個頁面顯示的資料依照$limit的數值，進行分頁。
         ->paginate($limit)
         // 這是用來保存前端傳進來的資料，並且將資料儲存在url中。
         ->appends($request->query());
-        // 回傳$animals的資料，並且回傳HTTP_OK的狀態碼。
-        return response($animals, Response::HTTP_OK);
+        return Cache::remember($fullurl,60,function() use($animals){
+            return response($animals, Response::HTTP_OK);
+        });
 
     }
 
