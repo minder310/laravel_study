@@ -32,7 +32,7 @@ class AnimalController extends Controller
         // 把$queryParams的資料，並且把資料儲存在$queryString裡面。
         $fullurl="{$url}?{$queryString}";
 
-        // 使用laravel的快取方法檢查是否有快取紀錄。
+        // 使用laravel的快取方法檢查是否有快取紀錄，如果cache::has($fullurl)有快取紀錄，就回傳紀錄，如果沒有就存入快取紀錄。
         if(Cache::has($fullurl)){
             // 如果有快取紀錄，就回傳快取紀錄。
             return Cache::get($fullurl);
@@ -79,6 +79,8 @@ class AnimalController extends Controller
         ->paginate($limit)
         // 這是用來保存前端傳進來的資料，並且將資料儲存在url中。
         ->appends($request->query());
+        
+        // 使用laravel的快取方法，把$fullurl的資料，並且把資料儲存在$animals裡面，並且設定60秒後過期，如果有重複查詢的動作。就直接區用快取裡的資料。
         return Cache::remember($fullurl,60,function() use($animals){
             return response($animals, Response::HTTP_OK);
         });
